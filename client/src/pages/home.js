@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/home.css';
 
 function Home() {
@@ -31,8 +31,21 @@ function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
-    console.log('Form data:', formData); // Example logging
-    //navigate('/timetable');              // Navigate to timetable when submited
+
+    const data = new FormData();
+    data.append('file', formData.file);
+    data.append('lunchPeriods', formData.lunchPeriods.join(','));
+
+    fetch('http://localhost:3001/upload', {
+      method: 'POST',
+      body: data,
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      navigate('/timetable');
+    })
+    .catch(error => console.error('Error:', error));         // Navigate to timetable when submited
   };
 
   return (
